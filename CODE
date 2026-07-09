@@ -1,0 +1,303 @@
+
+matches = [{"map": "summit",
+           "agent": "omen",
+           "result" :"win",
+          "kills" : 8,
+            "deaths" : 6,
+           "acs" :149,
+           "better_rounds" :"defender" },
+           {"map": "summit",
+           "agent": "killjoy",
+            "result" :"win",
+           "kills" : 11,
+             "deaths" : 5,
+            "acs" : 205,
+            "better_rounds" : "defender"},
+           {"map": "sunset",
+            "agent": "fade",
+            "result" :"lose",
+             "kills" : 4,
+             "deaths" : 12,
+             "acs" : 73,
+             "better_rounds" : "defender"},
+           {"map": "lotus",
+            "agent": "breach",
+            "result" :"lose",
+             "kills" : 17,
+             "deaths" : 11,
+             "acs" : 222,
+             "better_rounds" : "attacker"},
+           {"map": "pearl",
+            "agent": "kayo",
+            "result" :"lose",
+             "kills" : 6,
+             "deaths" : 12,
+             "acs" : 135,
+             "better_rounds" :"attacker"},
+          {"map" : "sunset",
+          "agent" : "omen",
+           "result" :"win",
+            "kills" : 30,
+            "deaths" : 15,
+           "acs" : 304,
+            "better_rounds" : "attacker"},
+           {"map" : "sunset",
+            "agent" : "omen",
+            "result" :"lose",
+           "kills" : 15,
+            "deaths" : 13,
+             "acs" : 196,
+             "better_rounds" :"defender"},
+           {"map" : "summit",
+            "agent" : "omen",
+            "result" :"win",
+           "kills" : 16,
+             "deaths" : 12,
+             "acs" : 202,
+             "better_rounds" :"defender"},
+          {"map" : "haven",
+            "agent" : "omen",
+           "result" :"draw",
+           "kills" : 16,
+           "deaths" : 19,
+            "acs" : 154,
+            "better_rounds" :"defender"},
+           {"map" : "sunset",
+            "agent" : "cypher",
+            "result" :"win",
+            "kills" : 12,
+            "deaths" : 17,
+            "acs" : 155,
+            "better_rounds" :"defender"},
+           {"map" : "lotus",
+            "agent" : "omen",
+             "result" :"lose",
+             "kills" : 11,
+             "deaths" : 12,
+             "acs" : 191,
+             "better_rounds" :"defender"},
+          {"map" : "breeze",
+           "agent" : "cypher",
+           "result" :"win",
+           "kills" : 9,
+           "deaths" : 15,
+           "acs" : 118,
+           "better_rounds" :"defender"}]
+          
+
+games = len(matches)
+
+print("=" * 50)
+print("VALORANT ANALYSIS")
+print("=" * 50)
+
+# =====================================
+# 전체 승률
+# =====================================
+
+wins = 0
+
+for match in matches:
+    if match["result"] == "win":
+        wins += 1
+
+win_rate = wins / games * 100
+
+print(f"총 경기 수 : {games}")
+print(f"승률 : {wins}/{games} ({win_rate:.1f}%)")
+print()
+
+# =====================================
+# 공격 / 수비
+# =====================================
+
+attack = 0
+defender = 0
+
+for match in matches:
+
+    if match["better_rounds"] == "attacker":
+        attack += 1
+
+    elif match["better_rounds"] == "defender":
+        defender += 1
+
+print(f"공격이 더 좋았던 경기 : {attack}/{games} ({attack/games*100:.1f}%)")
+print(f"수비가 더 좋았던 경기 : {defender}/{games} ({defender/games*100:.1f}%)")
+print()
+
+# =====================================
+# Over Kill / Over Death
+# =====================================
+
+over_kill = 0
+over_death = 0
+same = 0
+
+for match in matches:
+
+    if match["kills"] > match["deaths"]:
+        over_kill += 1
+
+    elif match["kills"] < match["deaths"]:
+        over_death += 1
+
+    else:
+        same += 1
+
+print(f"Over Kill : {over_kill}/{games} ({over_kill/games*100:.1f}%)")
+print(f"Over Death : {over_death}/{games} ({over_death/games*100:.1f}%)")
+print(f"Same K/D : {same}/{games} ({same/games*100:.1f}%)")
+print()
+
+# =====================================
+# 평균 ACS
+# =====================================
+
+total_acs = 0
+
+for match in matches:
+    total_acs += match["acs"]
+
+average_acs = total_acs / games
+
+print(f"평균 ACS : {average_acs:.1f}")
+
+if average_acs >= 240:
+    grade = "매우 훌륭함"
+elif average_acs >= 200:
+    grade = "좋음"
+elif average_acs >= 170:
+    grade = "평균"
+elif average_acs >= 140:
+    grade = "아쉬움"
+else:
+    grade = "나쁨"
+
+print(f"ACS 등급 : {grade}")
+print()
+
+# =====================================
+# 평균 킬 / 평균 데스
+# =====================================
+
+total_kills = 0
+total_deaths = 0
+
+for match in matches:
+    total_kills += match["kills"]
+    total_deaths += match["deaths"]
+
+print(f"평균 킬 : {total_kills/games:.1f}")
+print(f"평균 데스 : {total_deaths/games:.1f}")
+print()
+
+# =====================================
+# 요원별 승률 + 평균 ACS
+# =====================================
+
+agent_stats = {}
+
+for match in matches:
+
+    agent = match["agent"]
+
+    if agent not in agent_stats:
+        agent_stats[agent] = {
+            "games":0,
+            "wins":0,
+            "total_acs":0
+        }
+
+    agent_stats[agent]["games"] += 1
+    agent_stats[agent]["total_acs"] += match["acs"]
+
+    if match["result"] == "win":
+        agent_stats[agent]["wins"] += 1
+
+print("=" * 50)
+print("요원별 분석")
+print("=" * 50)
+
+for agent in agent_stats:
+
+    games_played = agent_stats[agent]["games"]
+    wins = agent_stats[agent]["wins"]
+
+    win_rate = wins / games_played * 100
+    average_acs = agent_stats[agent]["total_acs"] / games_played
+
+    print(f"{agent}")
+    print(f"   경기 수 : {games_played}")
+    print(f"   승률 : {win_rate:.1f}%")
+    print(f"   평균 ACS : {average_acs:.1f}")
+    print()
+
+# =====================================
+# 맵별 승률
+# =====================================
+
+map_stats = {}
+
+for match in matches:
+
+    map_name = match["map"]
+
+    if map_name not in map_stats:
+        map_stats[map_name] = {
+            "games":0,
+            "wins":0
+        }
+
+    map_stats[map_name]["games"] += 1
+
+    if match["result"] == "win":
+        map_stats[map_name]["wins"] += 1
+
+print("=" * 50)
+print("맵별 승률")
+print("=" * 50)
+
+for map_name in map_stats:
+
+    games_played = map_stats[map_name]["games"]
+    wins = map_stats[map_name]["wins"]
+
+    rate = wins / games_played * 100
+
+    print(f"{map_name} : {wins}/{games_played} ({rate:.1f}%)")
+
+print()
+
+# =====================================
+# 가장 많이 플레이한 요원
+# =====================================
+
+most_agent = ""
+most_agent_games = 0
+
+for agent in agent_stats:
+
+    if agent_stats[agent]["games"] > most_agent_games:
+        most_agent_games = agent_stats[agent]["games"]
+        most_agent = agent
+
+print(f"가장 많이 플레이한 요원 : {most_agent} ({most_agent_games}경기)")
+print()
+
+# =====================================
+# 가장 많이 플레이한 맵
+# =====================================
+
+most_map = ""
+most_map_games = 0
+
+for map_name in map_stats:
+
+    if map_stats[map_name]["games"] > most_map_games:
+        most_map_games = map_stats[map_name]["games"]
+        most_map = map_name
+
+print(f"가장 많이 플레이한 맵 : {most_map} ({most_map_games}경기)")
+
+print("=" * 50)
